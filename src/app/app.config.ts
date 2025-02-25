@@ -1,4 +1,4 @@
-import { ApplicationConfig, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, ErrorHandler, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
@@ -7,6 +7,8 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular
 import { requestInterceptor } from './request.interceptor';
 import { InitService } from './init.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { RouteConfigToken } from './services/routeConfig.service';
+import { GlobalErrorHandler } from './errorhandler.service';
 
 
 
@@ -22,10 +24,18 @@ export const appConfig: ApplicationConfig = {
     provide: APP_SERVICE_CONFIG,
     useValue: APP_CONFIG
   },
+  {
+    provide : RouteConfigToken,
+    useValue : {title : 'Home'},
+  },
+  {
+    provide : ErrorHandler,
+    useClass : GlobalErrorHandler
+  },
   provideHttpClient(),
   provideClientHydration(),
   provideHttpClient(withInterceptors([requestInterceptor])),
-  provideAppInitializer(() => inject(InitService).init()), provideAnimationsAsync(),
+  provideAppInitializer(() => inject(InitService).init()), provideAnimationsAsync(), provideAnimationsAsync(),
 
   ]
 

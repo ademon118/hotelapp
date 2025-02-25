@@ -1,0 +1,137 @@
+{{bookingForm.value | json}}
+{{bookingForm.pristine | json}}
+{{bookingForm.dirty | json}}
+
+{{bookingForm.invalid |json}}
+{{bookingForm.valid | json}}
+
+<div>
+    <button mat-flat-button type="button" (click)="addPassport()">Add Passport</button>
+</div>
+<div>
+    <button mat-flat-button type="button" (click)="deletePassport()">Cancel</button>
+</div>
+<form [formGroup]="bookingForm" class="example-form" (ngSubmit)="addBooking()">
+    <mat-form-field *ngIf="bookingForm.get('passport')" class="example-full-width">
+        <mat-label>Passport</mat-label>
+        <input type="text" matInput formControlName="passport" placeholder="Passport Number">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Room ID </mat-label>
+        <input type="text" matInput formControlName="roomId" placeholder="Room ID">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Guest Email</mat-label>
+        <input type="text" matInput formControlName="guestEmail" placeholder="Provide an email">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Guess Name</mat-label>
+        <input type="text" matInput formControlName="guestName" placeholder="Provide Name">
+        {{bookingForm.get('guestName')?.errors |json }}
+        <mat-error *ngIf="bookingForm.get('guestName')?.hasError('minlength')">Name should have at least 5
+            Characters</mat-error>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Mobile Number</mat-label>
+        <input type="number" matInput formControlName="mobileNumber" placeholder="Provide Mobile Number">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Booking Amount</mat-label>
+        <input type="number" matInput formControlName="bookingAmount" placeholder="Provide Booking Amount">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Checkin Date</mat-label>
+        <input matInput [matDatepicker]="picker1" formControlName="checkinDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Checkout Date</mat-label>
+        <input matInput [matDatepicker]="picker2" formControlName="checkoutDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+        {{bookingForm.get('checkoutDate')?.errors |json }} 
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Booking Date</mat-label>
+        <input matInput [matDatepicker]="picker3" formControlName="bookingDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+        <mat-datepicker #picker3></mat-datepicker>
+    </mat-form-field>
+    <div formGroupName="address">
+        <mat-accordion class="example-headers-align" multi>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Adress</mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <mat-form-field>
+                    <mat-label>Address Line 1</mat-label>
+                    <input type="text" matInput formControlName="addressLine1" placeholder="Adress Line 1">
+                    <mat-error *ngIf="bookingForm.get('address.addressLine1')?.hasError('required')">Address Line 1 is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Address Line 2</mat-label>
+                    <input type="text" matInput formControlName="addressLine2" placeholder="Adress Line 2">
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>City</mat-label>
+                    <input type="text" matInput formControlName="city" placeholder="City">
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>State</mat-label>
+                    <input type="text" matInput formControlName="state" placeholder="State">
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Country</mat-label>
+                    <input type="text" matInput formControlName="country" placeholder="Country">
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Zip code</mat-label>
+                    <input type="number" matInput formControlName="zipCode" placeholder="Zipcode">
+                </mat-form-field>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <br>
+    <div>
+        <button mat-flat-button type="button" (click)="addGuest()">Add Guests</button>
+    </div>
+    <br>
+    <div formArrayName="guests">
+        <mat-accordion class="example-headers-align" multi>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Guests</mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngFor="let guest of guests.controls; let i=index">
+                    <div [formGroupName]="i">
+                        <mat-form-field>
+                            <input type="text" matInput formControlName="guestName" placeholder="Guest Name" />
+                            <mat-error *ngIf="bookingForm.get(['guests',i,'guestName'])?.hasError('required')">Guest Name is required</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div [formGroupName]="i">
+                        <mat-form-field>
+                            <input type="number" matInput formControlName="age" placeholder="Age" />
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <button mat-flat-button type="button" (click)="removeGuests(i)">Remove Guests</button>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div>
+        <mat-checkbox class="example-margin" formControlName="tnc">I accepted the terms and conditions</mat-checkbox>
+    </div>
+    <div>
+        <button [disabled]="bookingForm.invalid" mat-flat-button>Book Now</button>
+    </div>
+</form>

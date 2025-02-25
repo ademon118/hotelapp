@@ -4,20 +4,24 @@ import { CommonModule } from '@angular/common';
 import { EventEmitter } from '@angular/core';
 import { EventManagerPlugin } from '@angular/platform-browser';
 import { RoomsComponent } from '../rooms.component';
+import { RouterModule } from '@angular/router';
+import { FilterPipe } from '../filter.pipe';
 
 
 @Component({
   selector: 'hinv-rooms-list',
-  imports: [CommonModule],
+  imports: [CommonModule,RouterModule,FilterPipe],
   templateUrl: './rooms-list.component.html',
   styleUrl: './rooms-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RoomsListComponent implements OnInit, OnChanges,OnDestroy{
 
-  @Input() rooms: RoomList[] |null= [];
+  @Input() rooms: RoomList[]= [];
 
   @Input() title: string = '';
+
+  @Input() price : number = 0; 
 
   @Output() selectedRoom = new EventEmitter<RoomList>();
 

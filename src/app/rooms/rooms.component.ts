@@ -8,14 +8,20 @@ import { EmployeeComponent } from '../employee/employee.component';
 import { RoomsService } from './services/rooms.service';
 import { catchError, map, Observable, of, Subject, Subscription } from 'rxjs';
 import { HttpEventType } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { ConfigService } from '../services/config.service';
+import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'hinv-rooms',
-  imports: [CommonModule,RoomsListComponent, HeaderComponent],
+  imports: [CommonModule, RoomsListComponent, HeaderComponent, RouterModule, ReactiveFormsModule],
   templateUrl: './rooms.component.html',
   styleUrl: './rooms.component.css'
 })
 export class RoomsComponent implements OnInit, DoCheck, AfterViewInit, AfterViewChecked {
+
+
+  priceFilter!: FormControl;
 
 
   hotelname = 'Prine Hotel';
@@ -65,7 +71,7 @@ export class RoomsComponent implements OnInit, DoCheck, AfterViewInit, AfterView
   roomsCount$: Observable<any>;
 
 
-  constructor(@SkipSelf() private roomsService: RoomsService) {
+  constructor(@SkipSelf() private roomsService: RoomsService, private configService: ConfigService, private fb: FormBuilder) {
     this.rooms$ = this.roomsService.getRooms$.pipe(
       catchError((err) => {
         // console.log(err);
@@ -73,6 +79,9 @@ export class RoomsComponent implements OnInit, DoCheck, AfterViewInit, AfterView
         return of([]);
       })
     );
+
+    this.priceFilter = new FormControl(0);
+
 
 
     this.roomsCount$ = this.roomsService.getRooms$.pipe(
